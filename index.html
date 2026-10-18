@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<script>
+  (function() {
+    var GA_ID = 'G-WL7ZLEST6E';
+    var isLocalDev = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+    if (isLocalDev) return;
+    try { if (/[?&]no_ga=0/.test(location.search)) localStorage.removeItem('no_ga'); if (/[?&]no_ga=1/.test(location.search)) localStorage.setItem('no_ga', '1'); if (localStorage.getItem('no_ga') === '1') return; } catch (e) {}
+    var gaQ = new URLSearchParams(location.search); if (gaQ.get('obs') === '1' || gaQ.get('no_ga') === '1') return;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+    document.addEventListener('click', function(e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href*="booth.pm"]') : null;
+      if (!a) return;
+      gtag('event', 'booth_click', { link_url: a.href, link_id: a.id || '', link_text: (a.textContent || '').trim().slice(0, 40) });
+    });
+  })();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="のし紙(掛け紙)を無料で作成。御歳暮・内祝・出産内祝・結婚内祝・御礼・快気祝・志などの用途を選ぶと、表書きと水引(紅白・黒白、蝶結び・結び切り)、のしの有無を自動で選び、名前を縦書きで入れてA4・B5に印刷。画像で保存してコンビニでも印刷できます。登録不要、入力した名前は送信しません。">
+<link rel="canonical" href="https://uuhai0625.github.io/noshi-maker/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="のし紙メーカー|表書きと名前を入れてA4・B5に印刷(御歳暮・内祝・志/無料)">
+<meta property="og:description" content="のし紙(掛け紙)を無料で作成。御歳暮・内祝・出産内祝・結婚内祝・御礼・快気祝・志などの用途を選ぶと、表書きと水引(紅白・黒白、蝶結び・結び切り)、のしの有無を自動で選び、名前を縦書きで入れてA4・B5に印刷。画像で保存してコンビニでも印刷できます。登録不要、入力した名前は送信しません。">
+<meta property="og:url" content="https://uuhai0625.github.io/noshi-maker/">
+<meta property="og:image" content="https://uuhai0625.github.io/noshi-maker/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<title>のし紙メーカー|表書きと名前を入れてA4・B5に印刷(御歳暮・内祝・志/無料)</title>
+<style>
+  :root {
+    --bg: #f6f3ef;
+    --panel: #ffffff;
+    --border: #e0d9cf;
+    --field-border: #5f574c;
+    --text: #26211b;
+    --muted: #5b5348;
+    --accent: #a8323a;
+    --accent-dark: #7c2128;
+    --soft: #f8ecec;
+    --ng: #b3261e;
+    --locked: #d1c8bc;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+  header { background: var(--accent-dark); color: #fff; padding: 24px 20px 18px; text-align: center; }
+  header h1 { margin: 0 0 6px; font-size: 1.35rem; }
+  header p { margin: 0; font-size: .9rem; }
+  main { max-width: 1120px; margin: 0 auto; padding: 22px 16px 50px; }
+  main > * { min-width: 0; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "use pv" "name pv" "paper pv"; column-gap: 18px; align-items: start; }
+  .layout > * { min-width: 0; }
+  #use-card { grid-area: use; } #name-card { grid-area: name; } #paper-card { grid-area: paper; }
+  #pv-card { grid-area: pv; position: sticky; top: 12px; }
+  section.card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 18px; }
+  section.card h2 { margin: 0 0 6px; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .desc { color: var(--muted); font-size: .84rem; margin: 0 0 12px; }
+  .fine { color: var(--muted); font-size: .8rem; margin: 8px 0 0; }
+  .badge { display: inline-block; font-size: .7rem; padding: 2px 8px; border-radius: 999px; background: #fff1cc; color: #7a5600; font-weight: bold; }
+  .hidden { display: none !important; }
+  label.field, div.field { display: block; margin-bottom: 12px; }
+  .lbl { font-size: .85rem; font-weight: bold; display: block; }
+  .hint { font-size: .78rem; color: var(--muted); font-weight: normal; display: block; margin-top: 2px; }
+  select, input[type=text] { margin-top: 5px; min-height: 44px; border: 1px solid var(--field-border); border-radius: 8px; font-size: 1rem; font-family: inherit; background: #fff; color: var(--text); width: 100%; padding: 8px 10px; }
+  .row2 { display: flex; gap: 12px; }
+  .row2 > * { flex: 1; min-width: 0; }
+  .btn-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .btn { min-height: 44px; min-width: 44px; padding: 9px 16px; border-radius: 8px; font-size: .88rem; cursor: pointer; border: 1px solid var(--field-border); background: #fff; color: var(--text); font-family: inherit; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: bold; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+  .btn-row .btn { flex: 1; }
+  .chk { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: .88rem; cursor: pointer; }
+  .chk input { width: 20px; height: 20px; accent-color: var(--accent); }
+  .status { font-size: .82rem; color: var(--muted); margin-top: 6px; min-height: 1.2em; }
+  .status.err { color: var(--ng); font-weight: bold; }
+  .note { font-size: .84rem; margin: 8px 0 0; padding: 8px 10px; border-radius: 8px; background: var(--soft); }
+  .pv { border: 1px solid var(--border); border-radius: 8px; background: #e9e4dc; padding: 12px; display: flex; justify-content: center; }
+  .pv canvas { max-width: 100%; max-height: 460px; width: auto; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,.25); background: #fff; }
+  .guide { font-size: .88rem; }
+  .guide h3 { font-size: .95rem; margin: 14px 0 4px; }
+  .guide ul, .guide ol { padding-left: 1.3em; margin: 6px 0; }
+  .guide li { margin: 4px 0; }
+  .guide table { border-collapse: collapse; font-size: .9rem; margin: 6px 0; width: 100%; }
+  .guide th, .guide td { border: 1px solid var(--border); padding: 7px 8px; text-align: left; }
+  .guide th { background: var(--soft); }
+  .guide caption { text-align: left; font-size: .82rem; color: var(--muted); padding-bottom: 4px; }
+  .steps { font-size: .9rem; padding-left: 1.4em; margin: 10px 0 0; }
+  .steps li { margin: 4px 0; }
+  footer p { margin: 10px 0; }
+  .locked-panel { border: 1px dashed var(--locked); border-radius: 10px; padding: 16px; text-align: center; color: var(--muted); background: #fbf9f6; }
+  .locked-panel .lead { color: var(--text); font-weight: bold; }
+  .locked-panel .feat-list { text-align: left; max-width: 620px; margin: 10px auto; font-size: .85rem; padding-left: 1.2em; }
+  .buy-btn { display: inline-block; margin-top: 8px; background: var(--accent-dark); color: #fff; font-weight: bold; padding: 11px 22px; border-radius: 999px; text-decoration: none; font-size: .9rem; }
+  footer { max-width: 1120px; margin: 0 auto; padding: 0 16px 40px; font-size: .8rem; color: var(--muted); }
+  footer a { color: var(--muted); }
+  #printArea { display: none; }
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "use" "name" "paper" "pv"; }
+    #pv-card { position: static; }
+  }
+  @media (max-width: 600px) {
+    .row2 { flex-direction: column; gap: 0; }
+    section.card { padding: 16px 12px; }
+  }
+  @media print {
+    body.printing > * { display: none !important; }
+    body.printing > #printArea { display: block !important; }
+    #printArea img { display: block; }
+  }
+</style>
+<style id="pageStyle">@page { size: A4 landscape; margin: 0; }</style>
+<!--ANSHIN_CSS_START--><style>:root{--anshin-w:1088px;--anshin-pad:16px}.anshin-strip,.anshin{box-sizing:border-box;width:min(var(--anshin-w),calc(100% - 2 * var(--anshin-pad)));margin-left:auto;margin-right:auto}.anshin-strip{list-style:none;margin-top:10px;margin-bottom:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:.8rem;line-height:1.5}.anshin-strip li{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid rgba(20,120,90,.45);border-radius:999px;background:rgba(20,120,90,.07)}.anshin-strip li.anshin-more{border:0;background:none;padding:3px 2px}.anshin-strip a,.anshin a{color:inherit}.anshin{margin-top:18px;margin-bottom:18px;padding:14px 18px;border:1px solid rgba(20,120,90,.45);border-radius:10px;background:rgba(20,120,90,.05);font-size:.86rem;line-height:1.7}.anshin h2{font-size:1rem;margin:0 0 6px}.anshin p{margin:0 0 6px}.anshin ul{margin:0;padding-left:1.2em}.anshin li{margin:3px 0}.anshin details{margin-top:6px}.anshin summary{cursor:pointer;font-weight:bold}.anshin .anshin-meta{margin:8px 0 0;font-size:.8rem;opacity:.85}@media print{.anshin,.anshin-strip{display:none!important}}</style><!--ANSHIN_CSS_END-->
+<!--UPSELL_CSS_START--><style>.upsell-top{box-sizing:border-box;width:min(var(--anshin-w,880px),calc(100% - 2 * var(--anshin-pad,16px)));margin:12px auto 0;font-size:.85rem;line-height:1.6}.upsell-top a{color:inherit}.upsell-assure{list-style:none;margin:12px 0 10px;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px;font-size:.8rem;line-height:1.5}.upsell-assure li{padding:3px 10px;border:1px solid rgba(20,120,90,.45);border-radius:12px;background:rgba(20,120,90,.06)}.upsell-terms{margin:8px 0 0;font-size:.78rem;line-height:1.6;opacity:.85}.upsell-toast{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:9999;box-sizing:border-box;width:min(520px,calc(100% - 24px));padding:14px 56px 14px 16px;border-radius:12px;background:#fff;color:#222;border:1px solid #c9c2d6;box-shadow:0 6px 24px rgba(0,0,0,.18);font-size:.88rem;line-height:1.6}.upsell-toast p{margin:0 0 6px;font-weight:bold}.upsell-toast ul{margin:0 0 10px;padding-left:1.2em}.upsell-toast li{margin:2px 0}.upsell-toast .upsell-note{display:block;margin-top:6px;font-size:.75rem;color:#555}.upsell-toast .upsell-go{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:8px;background:#c9283e;color:#fff;font-weight:bold;text-decoration:none}.upsell-toast .upsell-go:focus-visible,.upsell-toast .upsell-x:focus-visible{outline:3px solid #2560c4;outline-offset:2px}.upsell-toast .upsell-x{position:absolute;top:4px;right:4px;width:44px;height:44px;border:0;border-radius:8px;background:transparent;color:#555;font-size:1.3rem;line-height:1;cursor:pointer}.upsell-inline{white-space:nowrap;color:inherit;text-decoration:underline;text-underline-offset:2px}@media print{.upsell-top,.upsell-assure,.upsell-terms,.upsell-toast,.upsell-inline{display:none!important}}</style><!--UPSELL_CSS_END-->
+</head>
+<body>
+
+<header>
+  <h1>のし紙メーカー</h1>
+  <p>用途を選んで名前を入れるだけで、表書き・水引・のしの入ったのし紙(掛け紙)に。御歳暮・内祝・御礼・志など、用途に合った水引を自動で選びます。A4・B5に印刷、画像でも保存できます。登録不要・スマホでも使えます</p>
+</header>
+<!--ANSHIN_STRIP_START-->
+<ul class="anshin-strip" aria-label="データの扱い">
+  <li><span aria-hidden="true">✓</span> 入力内容はこの端末の中だけで処理</li>
+  <li><span aria-hidden="true">✓</span> 登録・ログイン不要</li>
+  <li><span aria-hidden="true">✓</span> 仕組みを公開中</li>
+  <li class="anshin-more"><a href="#anshin">データの扱いをくわしく</a></li>
+</ul>
+<!--ANSHIN_STRIP_END-->
+<!--UPSELL_TOP_START--><p class="upsell-top no-print" id="upsellTop">このページは無料のまま使えます。機能を増やしたい方は <a href="#pro-section">買い切り版(¥100・1回払い)<span aria-hidden="true"> ↓</span></a></p><!--UPSELL_TOP_END-->
+
+<main>
+<div class="layout">
+
+  <section class="card" id="use-card">
+    <h2>① 用途</h2>
+    <label class="field"><span class="lbl">贈る目的</span>
+      <select id="inUse"></select>
+    </label>
+    <p class="note" id="useNote" aria-live="polite"></p>
+    <label class="field" style="margin-top:12px"><span class="lbl">表書き(水引の上)</span><input type="text" id="inTitle" maxlength="8"><span class="hint">用途を選ぶと決まった書き方が入ります。変えることもできます</span></label>
+    <div class="row2">
+      <label class="field"><span class="lbl">水引の色</span>
+        <select id="inColor">
+          <option value="red">紅白</option>
+          <option value="black">黒白</option>
+          
+        </select>
+      </label>
+      <label class="field"><span class="lbl">結び方</span>
+        <select id="inKnot">
+          <option value="bow">蝶結び(何度あってもよいお祝い・お礼)</option>
+          <option value="tie">結び切り(一度きりがよいこと)</option>
+        </select>
+      </label>
+    </div>
+    <label class="chk"><input type="checkbox" id="inNoshi" checked> のし(右上の飾り)をつける</label>
+  </section>
+
+  <section class="card" id="name-card">
+    <h2>② 名前(水引の下)</h2>
+    <label class="field"><span class="lbl">名前</span><input type="text" id="inName1" maxlength="14" placeholder="例: 山田太郎・山田"><span class="hint">フルネームか苗字。内祝は贈る側の名前(出産内祝は赤ちゃんの名前のことも)</span></label>
+    <label class="field"><span class="lbl">2人目(連名・空欄でもかまいません)</span><input type="text" id="inName2" maxlength="14"><span class="hint">夫婦の連名など。1人目(目上の人)がいちばん右に来ます</span></label>
+    <p class="fine" id="freeNameNote">3人の連名・「外一同」・会社名は買い切り版で入れられます。</p>
+    
+    <div class="row2">
+      <label class="field"><span class="lbl">書体</span>
+        <select id="inFont">
+          <option value="mincho" selected>明朝</option>
+          <option value="brush">毛筆風(Officeなどの毛筆フォントが入っていれば)</option>
+          <option value="gothic">ゴシック</option>
+        </select>
+      </label>
+      <label class="field"><span class="lbl">墨の色</span>
+        <select id="inInk">
+          <option value="dark" selected>濃い墨(ふつう)</option>
+          
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <section class="card" id="paper-card">
+    <h2>③ 用紙</h2>
+    <label class="field"><span class="lbl">用紙の大きさと向き</span>
+      <select id="inPaper">
+        <option value="A4L" selected>A4 横(箱にかける掛け紙)</option>
+        <option value="A4P">A4 縦</option>
+        <option value="B5L">B5 横(小さめの箱)</option>
+        
+      </select>
+      <span class="hint">箱の正面から左右の側面に回るくらいの大きさを選びます。大きすぎるときは、裏で重なる部分を切ります</span>
+    </label>
+  </section>
+
+  <section class="card" id="pv-card">
+    <h2>④ 見本を確かめて印刷</h2>
+    <div class="pv"><canvas id="cv" width="594" height="420" role="img" aria-label="のし紙の見本"></canvas></div>
+    <div class="status" id="outSt" role="status"></div>
+    <div class="btn-row">
+      <button type="button" class="btn primary" id="printBtn">家のプリンターで印刷</button>
+      <button type="button" class="btn" id="pngBtn">画像で保存(コンビニ印刷にも)</button>
+    </div>
+    <ol class="steps">
+      <li><strong>パソコン:</strong> 印刷画面で用紙を選んだ大きさにして、倍率は「100%」(「用紙に合わせる」はオフ)。</li>
+      <li><strong>スマホ:</strong> 印刷画面で用紙の大きさを選んで印刷します。</li>
+      <li><strong>コンビニ:</strong> 「画像で保存」した画像を、同じ大きさの用紙(A4など)で印刷します。「等倍」「原寸」を選べるときは選んでください(自動で縮小されると、少し小さくなります)。</li>
+    </ol>
+    <p class="fine">家のプリンターでは、ふちの数mmが印刷されないことがあります。表書きや名前は内側にあるので、ふつうは問題ありません。</p>
+    <p class="fine" id="creditNote"></p>
+  </section>
+
+</div>
+
+  <section class="card" id="pro-section">
+    <h2>3人の連名・会社名・短冊のし <span class="badge">買い切り版 ¥100(税込)</span></h2>
+    <div class="locked-panel">
+      <p class="lead">会社名・3人の連名や、短冊のしもパソコンで。</p>
+      <p>このページの機能は無料でそのまま使えます。買い切り版(ダウンロード購入)では、次の機能が増えます:</p>
+      <ul class="feat-list">
+        <li><strong>3人の連名・外一同・会社名と肩書き</strong>(無料版は2人まで)</li>
+        <li><strong>短冊のし</strong>(A4に4枚)と、B4・A3の掛け紙</li>
+        <li><strong>水引の色が増えます</strong>: 金銀・黄白(無料版は紅白・黒白)</li>
+        <li><strong>薄墨</strong>(お通夜・葬儀の御供などに)</li>
+        <li><strong>ツール名が入りません</strong>(無料版は用紙の右下のすみに小さく入ります)</li>
+        <li><strong>パソコンで使うHTMLファイルです</strong>(スマホでの動作は保証していません)。ダブルクリックで開くだけ、ネットにつながっていなくても使えます</li>
+      </ul>
+<!--UPSELL_ASSURE_START--><ul class="upsell-assure" aria-label="買い切り版について"><li>¥100(税込)の1回払い・月額なし</li><li>パソコン向けのHTMLファイル(スマホでは開けない機種あり)</li><li>ネットにつながっていなくても動く</li><li>BOOTHで購入(クレジットカード・楽天ペイは手数料なし、コンビニ・銀行払いは別途手数料)</li></ul><!--UPSELL_ASSURE_END-->
+      <a class="buy-btn" href="https://uuhai0625.booth.pm/items/9005968" id="buyLink" target="_blank" rel="noopener">パソコン用の買い切り版を見る(BOOTH・新しいタブ)</a><!--UPSELL_TERMS_START--><p class="upsell-terms">販売者の情報・返品などの販売条件は、BOOTHの商品ページでご確認ください。BOOTHでの購入にはpixivのアカウントが必要です。</p><!--UPSELL_TERMS_END-->
+    </div>
+  </section>
+
+  <section class="card guide" id="guide">
+    <h2>のし紙の選び方と書き方</h2>
+    <h3>用途ごとの早見表(一般的な例)</h3>
+    <table>
+      <caption>用途ごとの表書き・水引・のし</caption>
+      <thead><tr><th scope="col">用途</th><th scope="col">表書き</th><th scope="col">水引</th><th scope="col">のし</th></tr></thead>
+      <tbody id="guideBody"></tbody>
+    </table>
+    <p class="fine">地域や宗派、お店によって違うことがあります。迷ったときは、贈る相手の地域の習わしに合わせてください。</p>
+    <h3>名前の書き方</h3>
+    <ul>
+      <li>水引の下のまん中に、フルネームか苗字を書きます。</li>
+      <li>連名は3人までが目安。右から目上の人の順に書きます。4人以上は代表者の名前と「外一同」。</li>
+      <li>会社から贈るときは、会社名を名前の右に小さく書きます。</li>
+    </ul>
+    <h3>よくある質問</h3>
+    <ul>
+      <li><strong>内のしと外のし、どちらがいい?</strong> 配送するときは品物に直接かけて上から包む「内のし」、手渡しするときは包装の上からかける「外のし」が目安です。内祝は控えめな「内のし」が多いです。</li>
+      <li><strong>のし(右上の飾り)をつけないのは?</strong> 弔事(香典返し・御供など)とお見舞いには、のしをつけないのが一般的です。肉や魚などの生ものを贈るときも、のしをつけないことがあります。</li>
+      <li><strong>お悔やみのときも「のし紙」?</strong> のしをつけない弔事の紙は「掛け紙」と呼びます。このツールでは、香典返し・御供を選ぶと、のしなしの掛け紙になります。</li>
+      <li><strong>毛筆風の書体にならない?</strong> 書体はお使いの端末に入っているものを使います。Officeなどに付いてくる毛筆フォント(HG行書体など)がない端末では、明朝などになります。</li>
+      <li><strong>入れた名前はどこかに送られる?</strong> 送られません。すべてこのブラウザの中で処理します。</li>
+    </ul>
+  </section>
+
+</main>
+
+<!--ANSHIN_START-->
+<section class="anshin" id="anshin" aria-labelledby="anshin-title">
+  <h2 id="anshin-title">データの扱いについて</h2>
+  <p>このページには、入力した内容を受け取る仕組みがありません。入力した文字や数字は、あなたのスマホやパソコンの中だけで処理されます。</p>
+  <ul>
+    <li>会員登録・ログイン・メールアドレスの入力はありません。</li>
+    <li>自分で確かめたい方へ: ページを開いたあと機内モードにしても、そのまま使えます。</li>
+  </ul>
+  <details>
+    <summary>もっとくわしく(保存・アクセス解析・公開について)</summary>
+    <ul>
+      <li>保存されるデータは、この端末のこのブラウザの中にだけ残ります(localStorage・sessionStorage)。共用のパソコンでは使い終わったら消してください。</li>
+      <li>アクセス解析(Google Analytics)のため、見たページのURL・参照元・端末やブラウザの種類・おおよその地域(IPアドレスから推定)・Cookieの識別子・BOOTHへのリンクのクリック・どのボタンを押したか(回数や選んだ設定を含む)がGoogleに送られます。目的は利用状況の把握です。入力した文字や画像は送りません。(<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Googleによるデータの使用</a>/<a href="https://tools.google.com/dlpage/gaoptout?hl=ja" target="_blank" rel="noopener">計測を止めるアドオン</a>。止めてもツールはそのまま使えます)</li>
+      <li>このツールの結果や作成物は目安です。入稿・契約・販売などの前には、印刷所や公式の情報でご確認ください。</li>
+      <li>処理の中身はすべて公開しています(詳しい方向け: <a href="https://github.com/uuhai0625/noshi-maker" target="_blank" rel="noopener">GitHub</a>)。</li>
+    </ul>
+  </details>
+  <p class="anshin-meta">作っている人: ウーハイ(個人開発)/不具合・ご質問は<a href="https://x.com/uuhai0625" target="_blank" rel="noopener">X(@uuhai0625)</a>へ/<a href="https://uuhai0625.github.io/" target="_blank" rel="noopener">ほかのツール</a>/この説明の更新日: 2026-10-13</p>
+</section>
+<!--ANSHIN_END-->
+
+<footer>
+  <p id="privacyNote">入力した内容はどこにも送信されません(すべてこのブラウザの中で処理します)。</p>
+  <p><a href="https://uuhai0625.booth.pm/" target="_blank" rel="noopener">他のツールも見る(BOOTHショップ)</a></p>
+  <p>不具合・ご要望は X <a href="https://x.com/uuhai0625" target="_blank" rel="noopener">@uuhai0625</a> まで。</p>
+  <p class="related-tools no-print">関連する無料ツール: <a href="https://uuhai0625.github.io/tategaki-gazou/" target="_blank" rel="noopener">縦書き画像メーカー</a> ・ <a href="https://uuhai0625.github.io/nefuda-maker/" target="_blank" rel="noopener">値札メーカー</a> ・ <a href="https://uuhai0625.github.io/atena-label/" target="_blank" rel="noopener">宛名ラベル作成</a> ・ <a href="https://uuhai0625.github.io/#free-tools">ツール一覧</a></p>
+</footer>
+
+<div id="printArea"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var EDITION = "free"; // "full" で買い切り完全版
+
+  function track(name, params) {
+    if (!window.dataLayer) return;
+    (function () { window.dataLayer.push(arguments); })("event", name, params || {});
+  }
+  var $ = function (id) { return document.getElementById(id); };
+  function setSt(id, msg, err) { var e = $(id); if (!e) return; e.textContent = msg; e.classList.toggle("err", !!err); }
+
+  var CREDIT = true;
+  
+  // 用途: [名前, 表書き, 水引の色, 結び方, のし, ひとこと]
+  var USES = [
+    ["お歳暮", "御歳暮", "red", "bow", true, "12月上旬〜20日ごろに。過ぎたら「御年賀」「寒中御見舞」に。生もの(肉・魚)はのしをつけないことも"],
+    ["お中元", "御中元", "red", "bow", true, "7月初めから15日ごろ(関西は7月中旬〜8月15日ごろ)"],
+    ["出産内祝(出産祝いのお返し)", "内祝", "red", "bow", true, "名前は赤ちゃんの名前でも、親の名前でも"],
+    ["結婚内祝(結婚祝いのお返し)", "内祝", "red", "tie", true, "結婚は一度きりなので結び切り。名前は新しい苗字か、夫婦の連名(2人目の欄)。結婚は10本の水引が正式"],
+    ["内祝(そのほかのお祝いのお返し)", "内祝", "red", "bow", true, "入学・新築などのお祝いのお返しに"],
+    ["出産祝い", "御出産御祝", "red", "bow", true, "「御祝」でもOK"],
+    ["結婚祝い", "寿", "red", "tie", true, "「御結婚御祝」でもOK。結婚は10本の水引が正式。金銀の水引も使われます{P}"],
+    ["入学・卒業・就職祝い", "御祝", "red", "bow", true, "「御入学御祝」などでもOK"],
+    ["お礼", "御礼", "red", "bow", true, "お世話になったお礼に"],
+    ["お年賀(新年のあいさつ)", "御年賀", "red", "bow", true, "関東は1月7日、関西は15日ごろまで(松の内)に"],
+    ["快気祝(病気が治ったお返し)", "快気祝", "red", "tie", true, "治ったことは一度きりがよいので結び切り"],
+    ["お見舞い", "御見舞", "red", "tie", false, "のしはつけないのが一般的です"],
+    ["香典返し", "志", "black", "tie", false, "関西では表書き「満中陰志」・黄白の水引も{P}。のしはつけないのが一般的です"],
+    ["お供え(法事)", "御供", "black", "tie", false, "のしはつけないのが一般的です"],
+    ["粗品・ごあいさつ", "粗品", "red", "bow", true, "引っ越しのあいさつなどに(「御挨拶」も)"],
+    ["自分で決める", "", "red", "bow", true, "表書き・水引・のしを自由に選べます"]
+  ];
+  var COLORS = { red: ["#c8102e", "#ffffff", "紅白"], black: ["#222222", "#ffffff", "黒白"], gold: ["#c9a227", "#c8ccd2", "金銀"], yellow: ["#e3b53b", "#ffffff", "黄白"] };
+  var PAPERS = {
+    A4L: { W: 297, H: 210, name: "A4横" }, A4P: { W: 210, H: 297, name: "A4縦" }, B5L: { W: 257, H: 182, name: "B5横" },
+    B4L: { W: 364, H: 257, name: "B4横" }, A3L: { W: 420, H: 297, name: "A3横" }, TAN: { W: 210, H: 297, name: "短冊のし(A4に4枚)", strip: true }
+  };
+  var FONTS = {
+    mincho: '"Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", "MS PMincho", serif',
+    brush: '"HGS行書体", "HG行書体", "HG正楷書体-PRO", "HGS教科書体", "Yu Mincho", "Hiragino Mincho ProN", serif',
+    gothic: '"Yu Gothic", "YuGothic", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif'
+  };
+
+  // 用途の選択肢と早見表
+  USES.forEach(function (u, i) {
+    var o = document.createElement("option"); o.value = i; o.textContent = u[0]; $("inUse").appendChild(o);
+    if (!u[1]) return;
+    var tr = document.createElement("tr");
+    [u[0], u[1], COLORS[u[2]][2] + (u[3] === "bow" ? "蝶結び" : "結び切り"), u[4] ? "あり" : "なし"].forEach(function (t) { var td = document.createElement("td"); td.textContent = t; tr.appendChild(td); });
+    $("guideBody").appendChild(tr);
+  });
+  function noteText(t) { return t.replace("{P}", EDITION === "full" ? "" : "(買い切り版で選べます)"); }
+  function applyUse() {
+    var u = USES[+$("inUse").value];
+    if ($("inInk")) $("inInk").value = "dark";
+    if (u[1]) $("inTitle").value = u[1];
+    $("inColor").value = COLORS[u[2]] && $("inColor").querySelector('option[value="' + u[2] + '"]') ? u[2] : "red";
+    $("inKnot").value = u[3]; $("inNoshi").checked = u[4];
+    $("useNote").textContent = u[1] ? "表書き「" + u[1] + "」・" + COLORS[u[2]][2] + (u[3] === "bow" ? "の蝶結び" : "の結び切り") + "・のし" + (u[4] ? "あり" : "なし") + "。" + noteText(u[5]) : noteText(u[5]);
+  }
+  // 手で変えたとき、用途の決まりと違えばそっと知らせる
+  function checkCustom() {
+    var u = USES[+$("inUse").value];
+    if (!u[1]) return;
+    var w = [], label = u[0].replace(/\(.*/, "");
+    if ($("inKnot").value !== u[3]) w.push(label + "は" + (u[3] === "tie" ? "結び切り" : "蝶結び") + "が一般的です");
+    if ($("inNoshi").checked !== u[4]) w.push(label + "は、のし" + (u[4] ? "をつける" : "をつけない") + "のが一般的です");
+    if ($("inColor").value !== u[2] && !(u[2] === "black" && $("inColor").value === "yellow") && !(u[3] === "tie" && u[2] === "red" && $("inColor").value === "gold")) w.push(label + "は" + COLORS[u[2]][2] + "が一般的です");
+    $("useNote").textContent = w.length ? w.join("。") + "(地域の習わしで違うときは、そのままで大丈夫です)" : "";
+    if (!w.length) applyNoteOnly(u);
+  }
+  function applyNoteOnly(u) { $("useNote").textContent = "表書き「" + u[1] + "」・" + COLORS[u[2]][2] + (u[3] === "bow" ? "の蝶結び" : "の結び切り") + "・のし" + (u[4] ? "あり" : "なし") + "。" + noteText(u[5]); }
+
+  function val(id) { var e = $(id); return e ? e.value.trim() : ""; }
+  function conf() {
+    var paper = PAPERS[$("inPaper").value] || PAPERS.A4L, ink = val("inInk") === "light" ? "#7d7d7d" : "#1a1a1a";
+    return {
+      title: val("inTitle"), color: COLORS[$("inColor").value] ? $("inColor").value : "red", knot: $("inKnot").value, noshi: $("inNoshi").checked,
+      ten: (USES[+$("inUse").value][0].indexOf("結婚") >= 0) && $("inKnot").value === "tie",
+      names: [val("inName1"), val("inName2"), val("inName3")].filter(Boolean), org: val("inOrg"), font: FONTS[$("inFont").value] || FONTS.mincho, ink: ink, P: paper, paperKey: $("inPaper").value
+    };
+  }
+
+  // ===== 縦書き(1文字ずつ上から) =====
+  var ROT = "ー―‐－～〜…‥—＝（）「」『』【】〔〕［］〈〉《》-~()=";
+  function vtext(ctx, text, cx, top, size, maxH, font, color, weight) {
+    var chars = Array.from(text.replace(/[ 　]+/g, "　"));
+    if (!chars.length) return;
+    var step = size * 1.08, n = chars.length, s = size;
+    if (step * n > maxH) { s = maxH / n; step = s; }
+    ctx.save(); ctx.fillStyle = color; ctx.font = (weight || "500") + " " + s + "px " + font; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    chars.forEach(function (ch, i) {
+      var y = top + step * i + step / 2;
+      if (ch === "　") return;
+      if ("、。，．".indexOf(ch) >= 0) { ctx.fillText(ch, cx + s * 0.6, y - s * 0.6); return; }
+      if (ROT.indexOf(ch) >= 0) { ctx.save(); ctx.translate(cx, y); ctx.rotate(Math.PI / 2); ctx.fillText(ch, 0, 0); ctx.restore(); }
+      else ctx.fillText(ch, cx, y);
+    });
+    ctx.restore();
+    return step * n;
+  }
+
+  // ===== 水引とのし =====
+  function strands(ctx, x0, x1, y, k, col, n) {
+    var gap = 1.15 * k, w = 0.75 * k;
+    for (var i = 0; i < n; i++) { var yy = y + (i - (n - 1) / 2) * gap; ctx.strokeStyle = col; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x0, yy); ctx.lineTo(x1, yy); ctx.stroke(); }
+  }
+  function outlineStroke(ctx, path, col, k) {
+    // 白い水引は紙と見分けがつくよう、細い灰色のふちを付ける
+    ctx.save(); ctx.lineCap = "round";
+    if (col === "#ffffff") { ctx.strokeStyle = "#b9b4ac"; ctx.lineWidth = 0.95 * k; path(); ctx.stroke(); }
+    ctx.strokeStyle = col; ctx.lineWidth = 0.7 * k; path(); ctx.stroke(); ctx.restore();
+  }
+  function mizuhiki(ctx, cx, cy, w, k, C) {
+    var dark = COLORS[C.color][0], light = COLORS[C.color][1], n = C.ten ? 10 : 5, gap = (C.ten ? 0.9 : 1.15) * k;
+    // 向かって右が濃い色、左が白(銀)
+    for (var i = 0; i < n; i++) {
+      var yy = cy + (i - (n - 1) / 2) * gap;
+      outlineStroke(ctx, function () { ctx.beginPath(); ctx.moveTo(cx - w / 2, yy); ctx.lineTo(cx - 4 * k, yy); }, light, k);
+      outlineStroke(ctx, function () { ctx.beginPath(); ctx.moveTo(cx + 4 * k, yy); ctx.lineTo(cx + w / 2, yy); }, dark, k);
+    }
+    var s = Math.min(w / 10, 16 * k);
+    for (i = 0; i < n; i++) {
+      var o = (i - (n - 1) / 2) * gap * 0.8;
+      if (C.knot === "bow") {
+        // 蝶結び: 左右の輪と、下に垂れる2本の足
+        outlineStroke(ctx, function () { ctx.beginPath(); ctx.moveTo(cx, cy); ctx.bezierCurveTo(cx - s * 0.6, cy - s * 0.9 + o, cx - s * 1.5, cy - s * 0.4 + o, cx - s * 1.2, cy + o * 0.5); ctx.bezierCurveTo(cx - s * 0.9, cy + s * 0.3, cx - s * 0.3, cy + s * 0.1, cx, cy); }, light, k);
+        outlineStroke(ctx, function () { ctx.beginPath(); ctx.moveTo(cx, cy); ctx.bezierCurveTo(cx + s * 0.6, cy - s * 0.9 + o, cx + s * 1.5, cy - s * 0.4 + o, cx + s * 1.2, cy + o * 0.5); ctx.bezierCurveTo(cx + s * 0.9, cy + s * 0.3, cx + s * 0.3, cy + s * 0.1, cx, cy); }, dark, k);
+        outlineStroke(ctx, function () { ctx.beginPath(); ctx.moveTo(cx - 1 * k, cy); ctx.quadraticCurveTo(cx - s * 0.4, cy + s * 0.6, cx - s * 0.7 + o, cy + s * 1.3); }, light, k);
+        outlineStroke(ctx, function () { ctx.beginPath(); ctx.moveTo(cx + 1 * k, cy); ctx.quadraticCurveTo(cx + s * 0.4, cy + s * 0.6, cx + s * 0.7 + o, cy + s * 1.3); }, dark, k);
+      } else {
+        // 結び切り: 輪のない結び目から、足が斜め下に伸びる
+        outlineStroke(ctx, function () { ctx.beginPath(); ctx.moveTo(cx - 4 * k, cy + o); ctx.quadraticCurveTo(cx, cy - s * 0.5 + o, cx + 2 * k, cy + s * 0.15); ctx.quadraticCurveTo(cx - s * 0.3, cy + s * 0.6, cx - s * 0.8 + o, cy + s * 1.1); }, light, k);
+        outlineStroke(ctx, function () { ctx.beginPath(); ctx.moveTo(cx + 4 * k, cy + o); ctx.quadraticCurveTo(cx, cy - s * 0.5 + o, cx - 2 * k, cy + s * 0.15); ctx.quadraticCurveTo(cx + s * 0.3, cy + s * 0.6, cx + s * 0.8 + o, cy + s * 1.1); }, dark, k);
+      }
+    }
+    // 結び目の帯
+    ctx.fillStyle = dark; ctx.fillRect(cx - 2.2 * k, cy - (n * gap) / 2 - 0.6 * k, 4.4 * k, n * gap + 1.2 * k);
+    ctx.strokeStyle = "rgba(0,0,0,.25)"; ctx.lineWidth = 0.2 * k; ctx.strokeRect(cx - 2.2 * k, cy - (n * gap) / 2 - 0.6 * k, 4.4 * k, n * gap + 1.2 * k);
+  }
+  function noshiMark(ctx, x, y, h, k) {
+    // のし: 細長い六角形の包みと、中の黄色い帯
+    var w = h * 0.36;
+    ctx.save(); ctx.translate(x, y); ctx.rotate(-0.32);
+    ctx.beginPath(); ctx.moveTo(0, -h / 2); ctx.lineTo(w / 2, -h / 2 + w * 0.6); ctx.lineTo(w / 2, h / 2 - w * 0.4); ctx.lineTo(0, h / 2); ctx.lineTo(-w / 2, h / 2 - w * 0.4); ctx.lineTo(-w / 2, -h / 2 + w * 0.6); ctx.closePath();
+    ctx.fillStyle = "#fbe4e6"; ctx.fill(); ctx.strokeStyle = "#c8102e"; ctx.lineWidth = 0.5 * k; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -h / 2 + w * 0.35); ctx.lineTo(w * 0.22, -h / 2 + w * 0.75); ctx.lineTo(w * 0.22, h / 2 - w * 0.55); ctx.lineTo(0, h / 2 - w * 0.3); ctx.lineTo(-w * 0.22, h / 2 - w * 0.55); ctx.lineTo(-w * 0.22, -h / 2 + w * 0.75); ctx.closePath();
+    ctx.fillStyle = "#ffffff"; ctx.fill(); ctx.strokeStyle = "#c8102e"; ctx.lineWidth = 0.35 * k; ctx.stroke();
+    ctx.fillStyle = "#e9b93a"; ctx.fillRect(-w * 0.06, -h * 0.28, w * 0.12, h * 0.56);
+    ctx.restore();
+  }
+
+  // ===== のし紙1枚(W×H mm)を描く =====
+  function drawSheet(ctx, C, x, y, W, H, k, strip) {
+    ctx.save(); ctx.translate(x, y);
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W * k, H * k);
+    // 短冊のしは水引を描かず、のし・表書き・名前だけ
+    var cx = W / 2 * k, cy = (strip ? H * 0.45 : H * 0.48) * k;
+    if (!strip) mizuhiki(ctx, cx, cy, W * k, k, C);
+    var unit = Math.min(W, H);
+    if (C.noshi) noshiMark(ctx, (W - (strip ? 11 : unit * 0.13)) * k, (strip ? 22 : unit * 0.16) * k, (strip ? 26 : unit * 0.2) * k, k);
+    // 表書き(水引の上)
+    var tSize = (strip ? 10.5 : unit * 0.085) * k, topY = (strip ? 34 : H * 0.05) * k, tGap = (strip ? 8 : unit * 0.06) * k, topMax = cy - topY - tGap;
+    var tn = Array.from(C.title.replace(/[ 　]+/g, "　")).length, tReal = tSize;
+    if (tn && tn * tSize * 1.08 > topMax) tReal = topMax / tn;
+    if (C.title) {
+      var tLen = Math.min(tn * tSize * 1.08, topMax);
+      vtext(ctx, C.title, cx, cy - tGap - tLen, tSize, topMax, C.font, C.ink, "700");
+    }
+    // 名前(水引の下)。連名は右から順に
+    var nSize = Math.min((strip ? 8.5 : unit * 0.06) * k, C.title ? tReal * 0.85 : Infinity), nTop = cy + (strip ? 10 : unit * 0.13) * k, nMax = H * k - nTop - (strip ? 10 : unit * 0.05) * k;
+    var names = C.names, colGap = nSize * 1.5, n = names.length;
+    // 「外一同」は代表者の左に小さく
+    names.forEach(function (nm, i) { vtext(ctx, nm, cx + ((n - 1) / 2 - i) * colGap, nTop, nm === "外一同" ? nSize * 0.75 : nSize, nMax, C.font, C.ink, "500"); });
+    if (!n && C.preview) vtext(ctx, "(名前)", cx, nTop, nSize, nMax, C.font, "#c4bdb3", "500");
+    if (C.org) { var oSize = nSize * 0.62; vtext(ctx, C.org, Math.min(cx + ((n - 1) / 2) * colGap + nSize * 1.15, W * k - oSize * 1.2), nTop, oSize, nMax * 0.8, C.font, C.ink, "500"); }
+    ctx.restore();
+  }
+  function renderPaper(C, dpi) {
+    var P = C.P;
+    if (P.W * P.H * Math.pow(dpi / 25.4, 2) > 16e6) dpi = Math.floor(Math.sqrt(16e6 / (P.W * P.H)) * 25.4);
+    var k = dpi / 25.4, cv = document.createElement("canvas");
+    cv.width = Math.round(P.W * k); cv.height = Math.round(P.H * k);
+    var ctx = cv.getContext("2d");
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, cv.width, cv.height);
+    if (P.strip) {
+      var sw = P.W / 4;
+      for (var i = 0; i < 4; i++) drawSheet(ctx, C, i * sw * k, 0, sw, P.H, k, true);
+      ctx.strokeStyle = "#bbb"; ctx.lineWidth = Math.max(1, 0.15 * k);
+      for (i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(i * sw * k, 0); ctx.lineTo(i * sw * k, cv.height); ctx.stroke(); }
+    } else drawSheet(ctx, C, 0, 0, P.W, P.H, k, false);
+    if (CREDIT) { ctx.fillStyle = "rgba(0,0,0,.22)"; ctx.font = (1.6 * k) + "px sans-serif"; ctx.textAlign = "right"; ctx.textBaseline = "alphabetic"; ctx.fillText("のし紙メーカー", (P.W - 3) * k, (P.H - 3) * k); }
+    return cv;
+  }
+
+  // ===== 見本 =====
+  var cv = $("cv"), timer = null;
+  function refresh() {
+    var C = conf(); C.preview = true; var r = renderPaper(C, 60);
+    blankOk = false; setSt("outSt", "");
+    cv.width = r.width; cv.height = r.height; cv.getContext("2d").drawImage(r, 0, 0); r.width = r.height = 0;
+    cv.setAttribute("aria-label", "のし紙の見本(" + [C.title, COLORS[C.color][2] + (C.knot === "bow" ? "蝶結び" : "結び切り"), C.noshi ? "のしあり" : "のしなし", C.names.join("・")].filter(Boolean).join("・") + ")");
+    $("creditNote").textContent = EDITION === "full" ? "" : "無料版は、用紙の右下のすみに小さくツール名(のし紙メーカー)が入ります。箱の裏側に回ることが多い位置です。";
+  }
+  function later() { clearTimeout(timer); timer = setTimeout(refresh, 150); }
+  var blankOk = false;
+  $("inUse").addEventListener("change", function () { applyUse(); refresh(); });
+  ["inTitle", "inName1", "inName2", "inName3", "inOrg"].forEach(function (id) { if ($(id)) $(id).addEventListener("input", later); });
+  ["inColor", "inKnot", "inNoshi"].forEach(function (id) { $(id).addEventListener("change", function () { checkCustom(); refresh(); }); });
+  ["inFont", "inInk", "inPaper"].forEach(function (id) { if ($(id)) $(id).addEventListener("change", refresh); });
+  // 名前が空欄のときは1回だけ確かめる
+  function blankCheck() {
+    if (conf().names.length || blankOk) return true;
+    blankOk = true; setSt("outSt", "名前が空欄です。名前なしでよければ、もう一度ボタンを押してください。", true);
+    return false;
+  }
+
+  // ===== 印刷・保存 =====
+  function toBlob(c) { return new Promise(function (res) { c.toBlob(function (b) { res(b); }, "image/png"); }); }
+  function download(blob, name) {
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+  }
+  var busy = false, printUrls = [];
+  function clearPrint() { printUrls.forEach(function (u) { URL.revokeObjectURL(u); }); printUrls = []; $("printArea").textContent = ""; document.body.classList.remove("printing"); }
+  $("printBtn").addEventListener("click", function () {
+    if (busy || !blankCheck()) return; busy = true; clearPrint();
+    var C = conf(), P = C.P, c = renderPaper(C, 300);
+    $("pageStyle").textContent = "@page { size: " + P.W + "mm " + P.H + "mm; margin: 0; }";
+    toBlob(c).then(function (b) {
+      if (!b) throw new Error("blob");
+      c.width = c.height = 0;
+      return new Promise(function (res, rej) { var u = URL.createObjectURL(b), im = new Image(); printUrls.push(u); im.style.width = (P.W - 0.3) + "mm"; im.style.height = (P.H - 0.3) + "mm"; im.onload = res; im.onerror = function () { rej(new Error("img")); }; im.alt = ""; im.src = u; $("printArea").appendChild(im); });
+    }).then(function () {
+      document.body.classList.add("printing");
+      setSt("outSt", "印刷画面を開きました。用紙は「" + P.name + "」、倍率は「100%」で印刷してください。");
+      track("noshi_print", { use: $("inUse").value, paper: C.paperKey });
+      setTimeout(function () { window.print(); }, 50);
+    }).catch(function () { clearPrint(); setSt("outSt", "印刷用の画像を作れませんでした。", true); }).then(function () { busy = false; });
+  });
+  window.addEventListener("afterprint", function () { setTimeout(clearPrint, 300); });
+  $("pngBtn").addEventListener("click", function () {
+    if (busy || !blankCheck()) return; busy = true;
+    var C = conf(), c = renderPaper(C, 300);
+    toBlob(c).then(function (b) {
+      c.width = c.height = 0;
+      if (!b) throw new Error("blob");
+      download(b, "のし紙_" + (C.title || "無地") + "_" + C.P.name.replace(/[()]/g, "") + ".png");
+      setSt("outSt", "のし紙を画像(300dpi・" + C.P.W + "×" + C.P.H + "mm)で保存しました。コンビニで印刷するときは、同じ大きさの用紙で(「等倍」を選べるときは等倍で)。iPhoneでは「ファイル」に入ることがあります。");
+      track("noshi_save", { use: $("inUse").value, paper: C.paperKey });
+    }).catch(function () { setSt("outSt", "画像を作れませんでした。", true); }).then(function () { busy = false; });
+  });
+
+  if (EDITION === "full") { $("pro-section").classList.add("hidden"); $("freeNameNote").classList.add("hidden"); }
+  if (EDITION !== "full") {
+    $("privacyNote").innerHTML = '入力した内容はどこにも送信されません(すべてこのブラウザの中で処理します)。このページでは利用状況の把握のためにアクセス解析(Google Analytics)を使っています(入力した内容は含みません)。<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Googleによるデータの使用について</a>';
+  }
+  applyUse(); refresh();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
+})();
+</script>
+<!--UPSELL_JS_START-->
+<script>
+(function () {
+  "use strict";
+  var q = new URLSearchParams(location.search);
+  if (q.get("obs") === "1" || document.documentElement.classList.contains("obs")) return;
+  // 小さな案内(トースト)は、買い切り版がパソコン向けなので、マウス操作の広い画面でだけ出す
+  var pc = !!(window.matchMedia && matchMedia("(pointer:fine) and (min-width:720px)").matches);
+  var buy = document.getElementById("buyLink");
+  var pro = document.getElementById("pro-section");
+  if (!buy || !pro) return;
+  var FEATS = [];
+  var path = location.pathname.replace(/index\.html$/, "");
+  var KEY_CLOSED = "upsell_closed_until:" + path, KEY_SHOWN = "upsell_shown:" + path;
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function sess(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { return null; } }
+  function gtagEv(name, p) { if (!window.dataLayer) return; (function () { window.dataLayer.push(arguments); })("event", name, p || {}); }
+
+  var shown = false;
+  function blocked() {
+    if (shown || sess(KEY_SHOWN) === "1") return true;
+    var until = Number(store(KEY_CLOSED) || 0);
+    return until && Date.now() < until;
+  }
+  function feats() {
+    if (FEATS.length) return FEATS;
+    var out = [];
+    var lis = pro.querySelectorAll(".feat-list li");
+    for (var i = 0; i < lis.length && out.length < 3; i++) {
+      var all = lis[i].textContent.replace(/\s+/g, " ").trim();
+      if (/スマホ|HTMLファイル|パソコンで使う/.test(all)) continue;
+      var st = lis[i].querySelectorAll("strong");
+      var t = st.length === 1 ? st[0].textContent : all.split(/[::。]/)[0];
+      t = t.replace(/[((][^()()]*[))]/g, "").replace(/\s+/g, " ").trim();
+      if (t.length > 40) t = t.slice(0, 39) + "…";
+      if (t) out.push(t);
+    }
+    return out;
+  }
+  // 「〜してください」「できません」など、失敗の表示が出ていたら案内しない
+  function failed() {
+    var els = document.querySelectorAll('[role="status"], [role="alert"], [aria-live]');
+    for (var i = 0; i < els.length; i++) {
+      if (pro.contains(els[i]) || !els[i].offsetParent) continue;
+      if (/ください|できません|できませんでした|失敗|ありません|エラー/.test(els[i].textContent)) return true;
+    }
+    return false;
+  }
+  function proVisible() {
+    var r = pro.getBoundingClientRect();
+    return r.top < innerHeight && r.bottom > 0;
+  }
+  function show(trigger) {
+    if (!pc || blocked() || (trigger === "action" && failed()) || proVisible()) return;
+    var list = feats();
+    if (!list.length) return;
+    shown = true;
+    sess(KEY_SHOWN, "1");
+    var box = document.createElement("aside");
+    box.className = "upsell-toast";
+    box.setAttribute("aria-label", "買い切り版のご案内");
+    box.setAttribute("aria-live", "polite");
+    document.body.appendChild(box);
+    var p = document.createElement("p");
+    p.textContent = trigger === "limit"
+      ? "この先は買い切り版の機能です。パソコン用の買い切り版(¥100・税込)なら:"
+      : "うまくできましたか? パソコン用の買い切り版(¥100・税込)なら、さらに:";
+    var ul = document.createElement("ul");
+    list.forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+    var a = document.createElement("a");
+    a.className = "upsell-go";
+    a.id = "upsellToastLink";
+    a.href = buy.href;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "BOOTHで見る(新しいタブ)";
+    var bg = getComputedStyle(buy).backgroundColor;
+    if (bg && !/rgba?\(0, 0, 0, 0\)|transparent/.test(bg)) a.style.background = bg;
+    var x = document.createElement("button");
+    x.type = "button";
+    x.className = "upsell-x";
+    x.setAttribute("aria-label", "この案内を閉じる");
+    x.textContent = "×";
+    function close(remember) {
+      if (box.parentNode) box.parentNode.removeChild(box);
+      document.removeEventListener("keydown", onKey);
+      if (remember) store(KEY_CLOSED, String(Date.now() + 7 * 864e5));
+    }
+    // Escはページ側の操作(選択解除など)にも使われるので、案内の中にフォーカスがある時だけ閉じる
+    function onKey(e) { if (e.key === "Escape" && box.contains(document.activeElement)) close(true); }
+    x.addEventListener("click", function () { close(true); });
+    a.addEventListener("click", function () { setTimeout(function () { close(false); }, 0); });
+    document.addEventListener("keydown", onKey);
+    setTimeout(function () {
+      var note = document.createElement("small");
+      note.className = "upsell-note";
+      note.textContent = "スマホではファイルを開けない機種があります";
+      box.appendChild(x); box.appendChild(p); box.appendChild(ul); box.appendChild(a); box.appendChild(note);
+    }, 50);
+    gtagEv("upsell_show", { trigger: trigger });
+  }
+
+  // 保存・コピー・印刷・書き出しを押した直後(結果を受け取れたタイミング)
+  var OK = /保存|コピー|印刷|書き出|ダウンロード|共有|PDF/;
+  var NG = /読み込|リセット|消|削除|このブラウザに保存|確認|イメージを見る|戻/;
+  document.addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("button, a[download], input[type=button], input[type=submit]") : null;
+    if (!el || el.closest("#pro-section, .upsell-toast, #anshin")) return;
+    var label = (el.textContent || el.value || "").replace(/\s+/g, " ");
+    if (!OK.test(label) || NG.test(label)) return;
+    setTimeout(function () { show("action"); }, 1500);
+  }, true);
+
+  // 無料版の上限まわり
+  // (1) ページが出す「買い切り版」の一文に、購入欄へのリンクを足す(スマホでも)。🔒のタブは薄く表示されているので入れない
+  // (2) 案内(パソコンのみ)は、はっきりした合図のときだけ出す: 🔒のクリック・買い切り版にふれたalert・
+  //     初めて出た「〜まで/のみ/以降/入っていません」の上限の一文(計算のたびに出る誘導文や、同じ文の描き直しでは出さない)
+  var SKIP = "#pro-section, .upsell-toast, .upsell-top, #anshin, a, button, label, select, option, h1, h2, h3, .badge, header, footer, nav, textarea, pre, code, [contenteditable], svg";
+  var LIMIT = /まで|のみ|以降|入っていません/;
+  var seenText = {}, ready = false;
+  function goPro(e) {
+    if (e) e.preventDefault();
+    pro.setAttribute("tabindex", "-1");
+    pro.scrollIntoView({ behavior: "smooth", block: "start" });
+    pro.focus({ preventScroll: true });
+  }
+  function linkify(root, deep) {
+    var limitHit = false;
+    var els = root.matches("p, div, span, li") ? [root] : [];
+    if (deep) els = els.concat([].slice.call(root.querySelectorAll("p, div, span, li")));
+    els.forEach(function (el) {
+      if (el.closest(SKIP) || el.closest('[role="radio"], [role="option"], [role="tab"], [role="button"], [tabindex]:not([tabindex="-1"])') || el.querySelector("a, button, p, div, li, input, label")) return;
+      // 選択肢の「○○(買い切り版)」ではなく、文として買い切り版にふれている要素だけ
+      var own = "";
+      for (var n = el.firstChild; n; n = n.nodeType === 1 && n.className === "upsell-inline" ? null : n.nextSibling) if (n.nodeType === 3) own += n.nodeValue;
+      own = own.trim();
+      if (own.indexOf("買い切り版") < 0 || /[((]買い切り版[))]$/.test(own) || /^🔒/.test(own)) return;
+      var key = own.replace(/\d+/g, "#");
+      if (ready && !seenText[key] && LIMIT.test(own) && !el.closest(".teaser, #teaser, [id$=teaser], #tz")) limitHit = true;
+      seenText[key] = 1;
+      if (el.querySelector(".upsell-inline")) return;
+      var a = document.createElement("a");
+      a.className = "upsell-inline";
+      a.href = "#pro-section";
+      a.setAttribute("aria-label", "くわしく:買い切り版の説明へ移動");
+      a.textContent = "くわしく";
+      var ar = document.createElement("span");
+      ar.setAttribute("aria-hidden", "true");
+      ar.textContent = " ↓";
+      a.appendChild(ar);
+      a.addEventListener("click", goPro);
+      el.appendChild(document.createTextNode(" "));
+      el.appendChild(a);
+    });
+    return limitHit;
+  }
+  linkify(document.body, true);
+  setTimeout(function () { ready = true; }, 1500);
+  var topLink = document.querySelector("#upsellTop a");
+  if (topLink) topLink.addEventListener("click", goPro);
+  new MutationObserver(function (ms) {
+    // 変わったところだけを調べる(足された要素はその中も、文字の変更は親要素だけ)
+    var hit = false, done = new Set();
+    function check(t, deep) {
+      if (!t || t.nodeType !== 1 || done.has(t) || t.closest(".upsell-toast")) return;
+      done.add(t);
+      if (linkify(t, deep)) hit = true;
+    }
+    ms.forEach(function (m) {
+      if (m.type === "characterData") { check(m.target.parentNode, false); return; }
+      check(m.target, false);
+      for (var i = 0; i < m.addedNodes.length; i++) if (m.addedNodes[i].nodeType === 1) check(m.addedNodes[i], true);
+    });
+    if (hit) setTimeout(function () { show("limit"); }, 800);
+  }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  document.addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("button, div, span, li") : null;
+    var first = el && el.firstChild && el.firstChild.nodeType === 3 ? el.firstChild.nodeValue : "";
+    if (!/^\s*🔒/.test(first) || e.target.closest("#pro-section")) return;
+    if (pc) setTimeout(function () { show("limit"); }, 300); else goPro();
+  }, true);
+  var origAlert = window.alert;
+  window.alert = function (msg) {
+    var r = origAlert.apply(window, arguments);
+    if (/買い切り版/.test(String(msg))) setTimeout(function () { show("limit"); }, 300);
+    return r;
+  };
+})();
+</script>
+<!--UPSELL_JS_END-->
+</body>
+</html>
